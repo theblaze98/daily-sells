@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Product } from "../types";
 import { storage, KEYS } from "../services/storage";
+import { seedProducts } from "../data/seedProducts";
 
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -8,7 +9,12 @@ export function useProducts() {
 
   useEffect(() => {
     storage.get<Product[]>(KEYS.PRODUCTS).then((data) => {
-      if (data) setProducts(data);
+      if (data && data.length > 0) {
+        setProducts(data);
+      } else {
+        storage.set(KEYS.PRODUCTS, seedProducts);
+        setProducts(seedProducts);
+      }
       setLoading(false);
     });
   }, []);
