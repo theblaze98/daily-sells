@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useProducts } from "../hooks/useProducts";
 import { useSales } from "../hooks/useSales";
 import { QuantityModal } from "../components/QuantityModal";
+import { SearchBar } from "../components/SearchBar";
 
 export function SalesPage() {
   const { products } = useProducts();
@@ -11,6 +12,7 @@ export function SalesPage() {
     name: string;
     price: number;
   } | null>(null);
+  const [search, setSearch] = useState("");
 
   const sales = getTodaySales();
 
@@ -28,23 +30,44 @@ export function SalesPage() {
     setSelectedProduct(null);
   };
 
+  const filtered = useMemo(
+    () =>
+      products.filter((p) => {
+        const q = search.toLowerCase();
+        return (
+          !q ||
+          p.name.toLowerCase().includes(q) ||
+          (p.category ?? "").toLowerCase().includes(q)
+        );
+      }),
+    [products, search]
+  );
+
   const grouped = useMemo(() => {
     const categories = new Map<string, typeof products>();
-    for (const p of products) {
+    for (const p of filtered) {
       const cat = p.category ?? "General";
       if (!categories.has(cat)) categories.set(cat, []);
       categories.get(cat)!.push(p);
     }
     return categories;
-  }, [products]);
+  }, [filtered]);
 
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-bold text-gray-800">Registrar venta</h2>
 
+      <SearchBar value={search} onChange={setSearch} placeholder="Buscar producto..." />
+
       {products.length === 0 && (
         <p className="text-center text-gray-400 mt-8">
           No hay productos. Ve a Productos para crear uno.
+        </p>
+      )}
+
+      {filtered.length === 0 && search && (
+        <p className="text-center text-gray-400 mt-8">
+          Sin resultados para "{search}"
         </p>
       )}
 
