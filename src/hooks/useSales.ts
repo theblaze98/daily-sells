@@ -80,6 +80,23 @@ export function useSales() {
     return computeSummary(getTodaySales());
   }, [getTodaySales]);
 
+  const updateSale = useCallback(
+    (id: string, data: { quantity?: number; unitPrice?: number }) => {
+      const updated = allSales.map((s) =>
+        s.id === id ? { ...s, ...data } : s
+      );
+      save(updated);
+    },
+    [allSales, save]
+  );
+
+  const deleteSale = useCallback(
+    (id: string) => {
+      save(allSales.filter((s) => s.id !== id));
+    },
+    [allSales, save]
+  );
+
   const clearTodaySales = useCallback(() => {
     const { start, end } = getTodayRange();
     const remaining = allSales.filter(
@@ -92,6 +109,8 @@ export function useSales() {
     allSales,
     loading,
     addSale,
+    updateSale,
+    deleteSale,
     getTodaySales,
     getTodaySummary,
     clearTodaySales,
