@@ -85,23 +85,22 @@ export function ProductForm({
 
   const canSubmit =
     name.trim() &&
-    (!!usdInput || !!bsInput) &&
     (parseFloat(usdInput) > 0 || parseFloat(bsInput) > 0);
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-end sm:items-center z-50">
+    <div className="fixed inset-0 bg-black/70 flex items-end sm:items-center z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-t-2xl sm:rounded-2xl p-5 w-full max-w-md mx-auto space-y-4 shadow-xl"
+        className="bg-zinc-900 rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-md mx-auto border border-zinc-800 shadow-2xl space-y-4"
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-800">
+          <h2 className="text-lg font-bold text-zinc-100">
             {initial ? "Editar producto" : "Nuevo producto"}
           </h2>
           <button
             type="button"
             onClick={onCancel}
-            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+            className="text-zinc-500 hover:text-zinc-300 text-xl leading-none transition-colors"
           >
             ✕
           </button>
@@ -112,12 +111,12 @@ export function ProductForm({
           placeholder="Nombre del producto"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
           autoFocus
         />
 
-        <div className="space-y-2">
-          <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+        <div className="space-y-1.5">
+          <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
             Precio en bolívares
           </label>
           <input
@@ -127,20 +126,20 @@ export function ProductForm({
             placeholder="0"
             value={bsInput}
             onChange={(e) => handleBsChange(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3.5 text-lg font-bold text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent"
           />
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs font-medium text-gray-400">
+          <div className="flex-1 h-px bg-zinc-800" />
+          <span className="text-[11px] font-medium text-zinc-600">
             o en USD (tasa: {exchangeRate.toFixed(2)})
           </span>
-          <div className="flex-1 h-px bg-gray-200" />
+          <div className="flex-1 h-px bg-zinc-800" />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+        <div className="space-y-1.5">
+          <label className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">
             Precio de referencia en USD
           </label>
           <input
@@ -150,12 +149,12 @@ export function ProductForm({
             placeholder="0.00"
             value={usdInput}
             onChange={(e) => handleUsdChange(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3.5 text-lg font-bold text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent"
           />
         </div>
 
         {bsInput && usdInput && parseFloat(bsInput) > 0 && parseFloat(usdInput) > 0 && (
-          <p className="text-center text-sm text-green-600 bg-green-50 py-2 rounded-lg font-medium">
+          <p className="text-center text-sm text-green-400 bg-green-500/10 py-2.5 rounded-xl font-medium">
             Bs {parseFloat(bsInput).toLocaleString()} ≈ ${parseFloat(usdInput).toFixed(2)}
           </p>
         )}
@@ -165,17 +164,17 @@ export function ProductForm({
           placeholder="Categoría (opcional)"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
         />
 
         <div className="flex gap-2 pt-1">
           <button
             type="submit"
             disabled={!canSubmit}
-            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors ${
+            className={`flex-1 py-3.5 rounded-xl text-sm font-medium transition-colors ${
               canSubmit
-                ? "bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900"
-                : "bg-gray-200 text-gray-400"
+                ? "bg-blue-600 hover:bg-blue-500 active:bg-blue-400 text-white"
+                : "bg-zinc-800 text-zinc-600"
             }`}
           >
             {initial ? "Guardar cambios" : "Crear producto"}
@@ -183,7 +182,7 @@ export function ProductForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-5 py-3 text-sm font-medium text-gray-500 hover:text-gray-700"
+            className="px-5 py-3.5 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
           >
             Cancelar
           </button>

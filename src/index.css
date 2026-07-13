@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+body {
+  background-color: #09090b;
+  color: #f4f4f5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Material-style scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 99px;
+}
+
+/* Remove arrows from number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}

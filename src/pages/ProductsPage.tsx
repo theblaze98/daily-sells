@@ -31,22 +31,24 @@ export function ProductsPage() {
 
   if (loading) {
     return (
-      <p className="text-center text-gray-400 mt-12">Cargando...</p>
+      <p className="text-center text-zinc-500 mt-12 text-sm">
+        Cargando...
+      </p>
     );
   }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-gray-800">
+        <h2 className="text-lg font-bold text-zinc-100">
           Productos{" "}
-          <span className="text-sm font-normal text-gray-400">
+          <span className="text-sm font-normal text-zinc-500">
             ({products.length})
           </span>
         </h2>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-800 active:bg-blue-900 shadow-sm"
+          className="bg-blue-600 hover:bg-blue-500 active:bg-blue-400 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors shadow-lg shadow-blue-600/20"
         >
           + Nuevo
         </button>
@@ -55,13 +57,13 @@ export function ProductsPage() {
       <SearchBar value={search} onChange={setSearch} placeholder="Buscar producto..." />
 
       {products.length === 0 && (
-        <p className="text-center text-gray-400 mt-12">
+        <p className="text-center text-zinc-500 mt-12 text-sm">
           No hay productos. Presiona "+ Nuevo" para crear el primero.
         </p>
       )}
 
       {filtered.length === 0 && search && (
-        <p className="text-center text-gray-400 mt-12">
+        <p className="text-center text-zinc-500 mt-12 text-sm">
           Sin resultados para "{search}"
         </p>
       )}

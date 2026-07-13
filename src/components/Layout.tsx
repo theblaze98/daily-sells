@@ -9,10 +9,10 @@ type Props = {
   onNavigate: (page: Page) => void;
 };
 
-const tabs: { page: Page; label: string }[] = [
-  { page: "products", label: "Productos" },
-  { page: "sales", label: "Ventas" },
-  { page: "dashboard", label: "Dashboard" },
+const tabs: { page: Page; label: string; icon: string }[] = [
+  { page: "products", label: "Productos", icon: "📦" },
+  { page: "sales", label: "Ventas", icon: "💰" },
+  { page: "dashboard", label: "Dashboard", icon: "📊" },
 ];
 
 export function Layout({ children, currentPage, onNavigate }: Props) {
@@ -20,34 +20,39 @@ export function Layout({ children, currentPage, onNavigate }: Props) {
   const [showRate, setShowRate] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-blue-700 text-white px-4 py-2 flex items-center justify-between shadow">
-        <h1 className="font-bold text-base">DailySells</h1>
+    <div className="flex flex-col h-screen bg-zinc-950 text-zinc-100">
+      <header className="bg-zinc-900/95 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
+        <h1 className="font-bold text-base tracking-tight">DailySells</h1>
         <button
           onClick={() => setShowRate(true)}
-          className="flex items-center gap-1 bg-blue-600 px-2.5 py-1 rounded-lg text-xs font-medium active:bg-blue-500"
+          className="flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors"
         >
-          <span>Bs</span>
-          <span className="font-bold">{rate.toFixed(2)}</span>
-          <span className="text-[10px] opacity-80">/USD</span>
+          <span className="text-blue-400 font-bold">{rate.toFixed(2)}</span>
+          <span className="text-zinc-400">Bs/USD</span>
         </button>
       </header>
-      <main className="flex-1 overflow-y-auto p-3">{children}</main>
-      <nav className="flex border-t bg-white shadow">
-        {tabs.map(({ page, label }) => (
+
+      <main className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
+        {children}
+      </main>
+
+      <nav className="flex bg-zinc-900 border-t border-zinc-800 pb-1">
+        {tabs.map(({ page, label, icon }) => (
           <button
             key={page}
             onClick={() => onNavigate(page)}
-            className={`flex-1 py-2.5 text-center text-xs font-medium transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition-colors rounded-t-xl ${
               currentPage === page
-                ? "text-blue-700 border-t-2 border-blue-700"
-                : "text-gray-500 hover:text-gray-700"
+                ? "text-blue-400"
+                : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
+            <span className="text-base">{icon}</span>
             {label}
           </button>
         ))}
       </nav>
+
       {showRate && (
         <ExchangeRateModal
           currentRate={rate}

@@ -55,19 +55,21 @@ export function DashboardPage() {
 
   if (loading) {
     return (
-      <p className="text-center text-gray-400 mt-8">Cargando...</p>
+      <p className="text-center text-zinc-500 mt-12 text-sm">
+        Cargando...
+      </p>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-bold text-gray-800">Dashboard</h2>
+    <div className="space-y-3">
+      <h2 className="text-lg font-bold text-zinc-100">Dashboard</h2>
 
       <DashboardSummary summary={summary} products={products} />
 
       {todaySales.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-semibold text-gray-700 mb-2">
+        <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-4">
+          <h3 className="text-sm font-semibold text-zinc-300 mb-1">
             Historial de ventas
           </h3>
           {todaySales
@@ -87,14 +89,14 @@ export function DashboardPage() {
       {todaySales.length > 0 && (
         <button
           onClick={() => setShowConfirm(true)}
-          className="w-full bg-red-600 text-white py-3 rounded-lg font-medium hover:bg-red-700"
+          className="w-full bg-red-600 hover:bg-red-500 active:bg-red-400 text-white py-3.5 rounded-xl font-medium transition-colors shadow-lg shadow-red-600/20"
         >
           Finalizar Jornada
         </button>
       )}
 
       {todaySales.length === 0 && (
-        <p className="text-center text-gray-400 mt-8">
+        <p className="text-center text-zinc-500 mt-12 text-sm">
           No hay ventas registradas hoy.
         </p>
       )}
@@ -110,12 +112,12 @@ export function DashboardPage() {
       )}
 
       {editingSale && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 w-full max-w-sm space-y-4">
-            <h2 className="text-lg font-bold text-gray-800">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-zinc-900 rounded-3xl p-6 w-full max-w-xs border border-zinc-800 shadow-2xl space-y-5">
+            <h2 className="text-lg font-bold text-zinc-100 text-center">
               Editar venta
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-zinc-400 text-center">
               {productNames[editingSale.productId] ?? "Producto eliminado"}
             </p>
             <input
@@ -123,19 +125,19 @@ export function DashboardPage() {
               min="1"
               value={editQuantity}
               onChange={(e) => setEditQuantity(e.target.value)}
-              className="w-full border rounded-lg px-4 py-3 text-center text-2xl font-bold"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-4 text-center text-3xl font-bold text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent"
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 onClick={handleEditConfirm}
-                className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700"
+                className="flex-1 bg-blue-600 hover:bg-blue-500 active:bg-blue-400 text-white py-3.5 rounded-xl font-medium transition-colors"
               >
                 Guardar
               </button>
               <button
                 onClick={() => setEditingSale(null)}
-                className="px-6 py-3 text-gray-600 font-medium"
+                className="px-5 py-3.5 text-sm font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
               >
                 Cancelar
               </button>
