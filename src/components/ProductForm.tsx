@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import type { Product } from "../types";
 
 type Props = {
@@ -20,36 +20,73 @@ export function ProductForm({
   onCancel,
 }: Props) {
   const [name, setName] = useState(initial?.name ?? "");
-  const [priceType, setPriceType] = useState<"bs" | "usd">(
-    initial?.usdPrice ? "usd" : "bs"
+  const [bsInput, setBsInput] = useState(
+    initial?.usdPrice
+      ? String(Math.round(initial.usdPrice * exchangeRate))
+      : initial
+        ? String(initial.price)
+        : ""
   );
-  const [bsPrice, setBsPrice] = useState(
-    initial && !initial.usdPrice ? String(initial.price) : ""
-  );
-  const [usdPrice, setUsdPrice] = useState(
+  const [usdInput, setUsdInput] = useState(
     initial?.usdPrice ? String(initial.usdPrice) : ""
   );
   const [category, setCategory] = useState(initial?.category ?? "");
 
-  const calculatedBs = usdPrice
-    ? Math.round(parseFloat(usdPrice) * exchangeRate)
-    : 0;
+  const handleBsChange = useCallback(
+    (value: string) => {
+      setBsInput(value);
+      const bs = parseFloat(value);
+      if (!isNaN(bs) && bs > 0 && exchangeRate > 0) {
+        setUsdInput((bs / exchangeRate).toFixed(2));
+      } else {
+        setUsdInput("");
+      }
+    },
+    [exchangeRate]
+  );
+
+  const handleUsdChange = useCallback(
+    (value: string) => {
+      setUsdInput(value);
+      const usd = parseFloat(value);
+      if (!isNaN(usd) && usd > 0 && exchangeRate > 0) {
+        setBsInput(String(Math.round(usd * exchangeRate)));
+      } else {
+        setBsInput("");
+      }
+    },
+    [exchangeRate]
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    if (priceType === "usd") {
-      const usd = parseFloat(usdPrice);
-      if (isNaN(usd) || usd <= 0) return;
-      const bs = Math.round(usd * exchangeRate);
-      onSubmit({ name: name.trim(), price: bs, usdPrice: usd, category: category.trim() || undefined });
+    const usd = parseFloat(usdInput);
+    const hasUsd = !isNaN(usd) && usd > 0;
+
+    if (hasUsd) {
+      onSubmit({
+        name: name.trim(),
+        price: Math.round(usd * exchangeRate),
+        usdPrice: usd,
+        category: category.trim() || undefined,
+      });
     } else {
-      const bs = parseFloat(bsPrice);
+      const bs = parseFloat(bsInput);
       if (isNaN(bs) || bs <= 0) return;
-      onSubmit({ name: name.trim(), price: bs, category: category.trim() || undefined });
+      onSubmit({
+        name: name.trim(),
+        price: bs,
+        category: category.trim() || undefined,
+      });
     }
   };
+
+  const canSubmit =
+    name.trim() &&
+    (!!usdInput || !!bsInput) &&
+    (parseFloat(usdInput) > 0 || parseFloat(bsInput) > 0);
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-end sm:items-center z-50">
@@ -79,64 +116,48 @@ export function ProductForm({
           autoFocus
         />
 
-        <div className="flex bg-gray-100 rounded-xl p-1">
-          <button
-            type="button"
-            onClick={() => setPriceType("bs")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-              priceType === "bs"
-                ? "bg-white text-blue-700 shadow-sm"
-                : "text-gray-500"
-            }`}
-          >
-            Precio en Bs
-          </button>
-          <button
-            type="button"
-            onClick={() => setPriceType("usd")}
-            className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-              priceType === "usd"
-                ? "bg-white text-blue-700 shadow-sm"
-                : "text-gray-500"
-            }`}
-          >
-            Precio en USD
-          </button>
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            Precio en bolívares
+          </label>
+          <input
+            type="number"
+            step="1"
+            min="0"
+            placeholder="0"
+            value={bsInput}
+            onChange={(e) => handleBsChange(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
         </div>
 
-        {priceType === "bs" ? (
-          <div>
-            <input
-              type="number"
-              step="1"
-              min="0"
-              placeholder="Precio en bolívares"
-              value={bsPrice}
-              onChange={(e) => setBsPrice(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-lg text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="Precio en USD"
-              value={usdPrice}
-              onChange={(e) => setUsdPrice(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-lg text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            {usdPrice && parseFloat(usdPrice) > 0 && (
-              <p className="text-center text-sm text-gray-500">
-                = Bs{" "}
-                <span className="font-semibold text-gray-700">
-                  {calculatedBs.toLocaleString()}
-                </span>{" "}
-                (tasa: {exchangeRate.toFixed(2)})
-              </p>
-            )}
-          </div>
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="text-xs font-medium text-gray-400">
+            o en USD (tasa: {exchangeRate.toFixed(2)})
+          </span>
+          <div className="flex-1 h-px bg-gray-200" />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            Precio de referencia en USD
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={usdInput}
+            onChange={(e) => handleUsdChange(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        {bsInput && usdInput && parseFloat(bsInput) > 0 && parseFloat(usdInput) > 0 && (
+          <p className="text-center text-sm text-green-600 bg-green-50 py-2 rounded-lg font-medium">
+            Bs {parseFloat(bsInput).toLocaleString()} ≈ ${parseFloat(usdInput).toFixed(2)}
+          </p>
         )}
 
         <input
@@ -150,7 +171,12 @@ export function ProductForm({
         <div className="flex gap-2 pt-1">
           <button
             type="submit"
-            className="flex-1 bg-blue-700 text-white py-3 rounded-xl text-sm font-medium hover:bg-blue-800 active:bg-blue-900"
+            disabled={!canSubmit}
+            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors ${
+              canSubmit
+                ? "bg-blue-700 text-white hover:bg-blue-800 active:bg-blue-900"
+                : "bg-gray-200 text-gray-400"
+            }`}
           >
             {initial ? "Guardar cambios" : "Crear producto"}
           </button>
