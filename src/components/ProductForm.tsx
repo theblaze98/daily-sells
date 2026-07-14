@@ -32,18 +32,9 @@ export function ProductForm({
   );
   const [category, setCategory] = useState(initial?.category ?? "");
 
-  const handleBsChange = useCallback(
-    (value: string) => {
-      setBsInput(value);
-      const bs = parseFloat(value);
-      if (!isNaN(bs) && bs > 0 && exchangeRate > 0) {
-        setUsdInput((bs / exchangeRate).toFixed(2));
-      } else {
-        setUsdInput("");
-      }
-    },
-    [exchangeRate]
-  );
+  const handleBsChange = useCallback((value: string) => {
+    setBsInput(value);
+  }, []);
 
   const handleUsdChange = useCallback(
     (value: string) => {

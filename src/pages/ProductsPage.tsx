@@ -68,7 +68,7 @@ export function ProductsPage() {
         </p>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="space-y-2">
         {filtered.map((product) => (
           <ProductCard
             key={product.id}
